@@ -1,0 +1,6 @@
+(library
+ (name irc)
+ (modes melange)
+ (libraries melange)
+ (preprocess
+  (pps melange.ppx)))

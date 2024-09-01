@@ -1,4 +1,5 @@
 (melange.emit
  (target dist)
+ (libraries es irc browser)
  (preprocess
   (pps melange.ppx)))
