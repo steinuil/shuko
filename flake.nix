@@ -15,9 +15,19 @@
       };
     };
   };
-  outputs = { self, nixpkgs, flake-utils, opam-repository, opam-nix }:
-    let package = "shuko";
-    in flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+      opam-repository,
+      opam-nix,
+    }:
+    let
+      package = "shuko";
+    in
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
         on = opam-nix.lib.${system};
@@ -26,11 +36,9 @@
           ocamlformat = "*";
           utop = "*";
         };
-        repos = [
-          opam-repository
-        ];
+        repos = [ opam-repository ];
         query = devPackagesQuery // {
-          ocaml-base-compiler = "5.1.1";
+          ocaml-base-compiler = "5.2.0";
         };
         scope = on.buildDuneProject { inherit repos; } package ./. query;
         overlay = final: prev: {
@@ -44,8 +52,7 @@
         # The main package containing the executable
         main = scope'.${package};
         # Packages from devPackagesQuery
-        devPackages = builtins.attrValues
-          (pkgs.lib.getAttrs (builtins.attrNames devPackagesQuery) scope');
+        devPackages = builtins.attrValues (pkgs.lib.getAttrs (builtins.attrNames devPackagesQuery) scope');
       in
       {
         legacyPackages = scope';
@@ -59,6 +66,6 @@
             # You can add packages from nixpkgs here
           ];
         };
-      });
+      }
+    );
 }
-

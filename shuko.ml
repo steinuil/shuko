@@ -102,7 +102,7 @@ let document = Window.document Window.window
 
 let () =
   let div = Document.create_element "div" document in
-  let root = Document.get_element_by_id "shuko" document |> Js.Option.getExn in
+  let root = Document.get_element_by_id "shuko" document |> Option.get in
   Element.append_child ~node:(Element.to_node div) root |> ignore;
   Element.get_client_rects div
   |> Dom_rect_list.to_iterable |> Iterable.to_array |> Js.log
@@ -111,14 +111,14 @@ let () =
   let h = Headers.of_array [| ("tfw", "gf") |] in
   h |> Headers.set ~name:"ayy" ~value:"lmao";
   h |> Headers.to_iterable |> Iterable.to_array
-  |> Js.Array.forEach (fun (k, _v) -> Js.log k);
+  |> Js.Array.forEach ~f:(fun (k, _v) -> Js.log k);
   let r = Request.create "ayy" () in
   let r2 = Request.copy r |> ignore in
   ignore r2;
   let url_search_params = Url_search_params.create () in
   url_search_params |> Url_search_params.set ~value:"lmao" ~name:"ayy";
   url_search_params |> Url_search_params.to_iterable |> Iterable.to_array
-  |> Js.Array.forEach (fun (k, _v) -> Js.log k);
+  |> Js.Array.forEach ~f:(fun (k, _v) -> Js.log k);
   ()
 
 let () =

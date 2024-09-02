@@ -75,7 +75,7 @@ let is_channel_name name =
   match name.[0] with '#' | '&' | '+' | '!' -> true | _ -> false
 
 let param_should_be_escaped param =
-  Js.String.includes " " param || Js.String.startsWith ":" param
+  Js.String.includes ~search:" " param || Js.String.startsWith ~prefix:":" param
 
 let parse command args =
   match (Js.String.toUpperCase command, args) with
@@ -84,9 +84,9 @@ let parse command args =
   | "USER", [| username; _; _; realname |] -> User { username; realname }
   | "OPER", [| name; password |] -> Oper { name; password }
   | "MODE", _ when Array.length args > 1 && is_channel_name args.(0) ->
-      Channel_mode { channel = args.(0); modes = Js.Array.sliceFrom 1 args }
+      Channel_mode { channel = args.(0); modes = Js.Array.slice ~start:1 args }
   | "MODE", _ when Array.length args > 1 ->
-      User_mode { nickname = args.(0); modes = Js.Array.sliceFrom 1 args }
+      User_mode { nickname = args.(0); modes = Js.Array.slice ~start:1 args }
   | "SERVICE", [| nickname; reserved1; distribution; type_; reserved2; info |]
     ->
       Service { nickname; reserved1; distribution; type_; reserved2; info }
@@ -94,41 +94,41 @@ let parse command args =
   | "QUIT", [| message |] -> Quit (Some message)
   | "SQUIT", [| server; comment |] -> Squit { server; comment }
   | "JOIN", [| channels |] ->
-      let channels = Js.String.split "," channels in
+      let channels = Js.String.split ~sep:"," channels in
       Join { channels; keys = [||] }
   | "JOIN", [| channels; keys |] ->
-      let channels = Js.String.split "," channels in
-      let keys = Js.String.split "," keys in
+      let channels = Js.String.split ~sep:"," channels in
+      let keys = Js.String.split ~sep:"," keys in
       Join { channels; keys }
   | "PART", [| channels |] ->
-      let channels = Js.String.split "," channels in
+      let channels = Js.String.split ~sep:"," channels in
       Part { channels; comment = None }
   | "PART", [| channels; comment |] ->
-      let channels = Js.String.split "," channels in
+      let channels = Js.String.split ~sep:"," channels in
       Part { channels; comment = Some comment }
   | "TOPIC", [| channel |] -> Topic { channel; topic = None }
   | "TOPIC", [| channel; topic |] -> Topic { channel; topic = Some topic }
   | "NAMES", [||] -> Names { channels = [||]; target = None }
   | "NAMES", [| channels |] ->
-      let channels = Js.String.split "," channels in
+      let channels = Js.String.split ~sep:"," channels in
       Names { channels; target = None }
   | "NAMES", [| channels; target |] ->
-      let channels = Js.String.split "," channels in
+      let channels = Js.String.split ~sep:"," channels in
       Names { channels; target = Some target }
   | "LIST", [| channels |] ->
-      let channels = Js.String.split "," channels in
+      let channels = Js.String.split ~sep:"," channels in
       List { channels; target = None }
   | "LIST", [| channels; target |] ->
-      let channels = Js.String.split "," channels in
+      let channels = Js.String.split ~sep:"," channels in
       List { channels; target = Some target }
   | "INVITE", [| nickname; channel |] -> Invite { nickname; channel }
   | "KICK", [| channels; nicknames |] ->
-      let channels = Js.String.split "," channels in
-      let nicknames = Js.String.split "," nicknames in
+      let channels = Js.String.split ~sep:"," channels in
+      let nicknames = Js.String.split ~sep:"," nicknames in
       Kick { channels; nicknames; comment = None }
   | "KICK", [| channels; nicknames; comment |] ->
-      let channels = Js.String.split "," channels in
-      let nicknames = Js.String.split "," nicknames in
+      let channels = Js.String.split ~sep:"," channels in
+      let nicknames = Js.String.split ~sep:"," nicknames in
       Kick { channels; nicknames; comment = Some comment }
   | "PRIVMSG", [| target; message |] -> (
       match Ctcp.parse message with
@@ -180,19 +180,19 @@ let parse command args =
   | "WHO", [| mask |] -> Who { mask = Some mask; only_operators = false }
   | "WHO", [| mask; "o" |] -> Who { mask = Some mask; only_operators = true }
   | "WHOIS", [| masks |] ->
-      let masks = Js.String.split "," masks in
+      let masks = Js.String.split ~sep:"," masks in
       Whois { target = None; masks }
   | "WHOIS", [| target; masks |] ->
-      let masks = Js.String.split "," masks in
+      let masks = Js.String.split ~sep:"," masks in
       Whois { target = Some target; masks }
   | "WHOWAS", [| nicknames |] ->
-      let nicknames = Js.String.split "," nicknames in
+      let nicknames = Js.String.split ~sep:"," nicknames in
       Whowas { nicknames; count = None; target = None }
   | "WHOWAS", [| nicknames; count |] ->
-      let nicknames = Js.String.split "," nicknames in
+      let nicknames = Js.String.split ~sep:"," nicknames in
       Whowas { nicknames; count = Some (int_of_string count); target = None }
   | "WHOWAS", [| nicknames; count; target |] ->
-      let nicknames = Js.String.split "," nicknames in
+      let nicknames = Js.String.split ~sep:"," nicknames in
       Whowas
         { nicknames; count = Some (int_of_string count); target = Some target }
   | "KILL", [| nickname; comment |] -> Kill { nickname; comment }
@@ -216,7 +216,7 @@ let parse command args =
       | Some _ when Array.length args = 0 -> Unknown (command, args)
       | Some reply ->
           let target = args.(0) in
-          let args = Js.Array.sliceFrom 1 args in
+          let args = Js.Array.slice ~start:1 args in
           let code = Reply.of_int reply in
           Reply { code; target; args })
 
@@ -229,10 +229,10 @@ let str command args =
       let last = args.(Array.length args - 1) in
       if param_should_be_escaped last then
         let prev = Js.Array.slice ~start:0 ~end_:(Array.length args - 1) args in
-        command ^ " " ^ Js.Array.joinWith " " prev ^ " :" ^ last
-      else command ^ " " ^ Js.Array.joinWith " " args
+        command ^ " " ^ Js.Array.join ~sep:" " prev ^ " :" ^ last
+      else command ^ " " ^ Js.Array.join ~sep:" " args
 
-let channel_list = Js.Array.joinWith ","
+let channel_list = Js.Array.join ~sep:","
 
 let to_string = function
   | Pass password -> str "PASS" [| password |]
@@ -240,9 +240,9 @@ let to_string = function
   | User { username; realname } -> str "USER" [| username; "0"; "*"; realname |]
   | Oper { name; password } -> str "OPER" [| name; password |]
   | User_mode { nickname; modes } ->
-      str "MODE" ([| nickname |] |> Js.Array.concat modes)
+      str "MODE" ([| nickname |] |> Js.Array.concat ~other:modes)
   | Channel_mode { channel; modes } ->
-      str "MODE" ([| channel |] |> Js.Array.concat modes)
+      str "MODE" ([| channel |] |> Js.Array.concat ~other:modes)
   | Service { nickname; reserved1; distribution; type_; reserved2; info } ->
       str "SERVICE"
         [| nickname; reserved1; distribution; type_; reserved2; info |]
@@ -338,5 +338,5 @@ let to_string = function
   | Reply { code; target; args } ->
       str
         (Js.Int.toString (Reply.to_int code))
-        ([| target |] |> Js.Array.concat args)
+        ([| target |] |> Js.Array.concat ~other:args)
   | Unknown (command, args) -> str command args

@@ -24,4 +24,4 @@
  (description
   "WEBIRC client")
  (depends
-  (melange (>= 2.2.0))))
+  (melange (= 4.0.1-52))))

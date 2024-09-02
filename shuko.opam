@@ -10,7 +10,7 @@ homepage: "https://github.com/steinuil/shuko"
 bug-reports: "https://github.com/steinuil/shuko/issues"
 depends: [
   "dune" {>= "3.8"}
-  "melange" {>= "2.2.0"}
+  "melange" {= "4.0.1-52"}
   "odoc" {with-doc}
 ]
 build: [

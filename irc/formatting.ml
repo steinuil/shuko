@@ -82,8 +82,7 @@ module Color = struct
 end
 
 let string_of_hex_color c =
-  Js.Int.toStringWithRadix ~radix:16 c
-  |> Utils.pad_start ~length:6 ~pad_string:"0"
+  Js.Int.toString ~radix:16 c |> Utils.pad_start ~length:6 ~pad_string:"0"
 
 module Color_command = struct
   type 'a t = Reset | Fg of 'a | Fg_bg of 'a * 'a
@@ -121,8 +120,8 @@ module Token = struct
 end
 
 let parse_color_format_with re of_string message i =
-  let rest = Js.String.sliceToEnd ~from:i message in
-  match Js.Re.exec_ re rest with
+  let rest = Js.String.slice ~start:i message in
+  match Js.Re.exec re ~str:rest with
   | None -> (Color_command.Reset, i)
   | Some m -> (
       let captures = Js.Re.captures m in
@@ -159,12 +158,13 @@ let parse message =
       | None -> out
       | Some str_i ->
           let str =
-            Js.String.slice ~from:str_i ~to_:(Js.String.length message) message
+            Js.String.slice ~start:str_i ~end_:(Js.String.length message)
+              message
           in
-          if str <> "" then Js.Array.push (Token.Text str) out |> ignore;
+          if str <> "" then Js.Array.push ~value:(Token.Text str) out |> ignore;
           out)
     else
-      let char = Js.String.charAt i message in
+      let char = Js.String.charAt ~index:i message in
       let prev_i = i in
       let code, i =
         match char with
@@ -187,17 +187,20 @@ let parse message =
       | None, Some _ -> parse in_string (i + 1)
       | None, None -> parse (Some i) (i + 1)
       | Some code, Some str_i ->
-          let str = Js.String.slice ~from:str_i ~to_:prev_i message in
-          Js.Array.push (Token.Text str) out |> ignore;
-          Js.Array.push code out |> ignore;
+          let str = Js.String.slice ~start:str_i ~end_:prev_i message in
+          Js.Array.push ~value:(Token.Text str) out |> ignore;
+          Js.Array.push ~value:code out |> ignore;
           parse None (i + 1)
       | Some code, None ->
-          Js.Array.push code out |> ignore;
+          Js.Array.push ~value:code out |> ignore;
           parse None (i + 1)
   in
   parse None 0
 
-let to_string parts = Js.Array.map Token.to_string parts |> Js.Array.joinWith ""
+let to_string parts =
+  Js.Array.map ~f:Token.to_string parts |> Js.Array.join ~sep:""
 
 let strip =
-  Js.Array.reduce (fun str -> function Token.Text t -> str ^ t | _ -> str) ""
+  Js.Array.reduce
+    ~f:(fun str -> function Token.Text t -> str ^ t | _ -> str)
+    ~init:""
