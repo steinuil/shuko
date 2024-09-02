@@ -8,7 +8,7 @@ external create :
 external append_string : name:string -> value:string -> unit = "append"
 [@@mel.send.pipe: t]
 
-external append_blob : name:string -> ?filename:string -> Blob.t -> unit
+external append_blob : name:string -> ?filename:string -> value:Blob.t -> unit
   = "append"
 [@@mel.send.pipe: t]
 
@@ -34,7 +34,8 @@ external has : string -> bool = "has" [@@mel.send.pipe: t]
 external set_string : name:string -> value:string -> unit = "set"
 [@@mel.send.pipe: t]
 
-external set_blob : name:string -> ?filename:string -> Blob.t -> unit = "set"
+external set_blob : name:string -> ?filename:string -> value:Blob.t -> unit
+  = "set"
 [@@mel.send.pipe: t]
 
 include Iterable.Pair (struct

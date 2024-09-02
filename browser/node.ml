@@ -43,12 +43,25 @@ module Type = struct
     | t -> invalid_arg ("Unknown nodeType: " ^ Js.Int.toString t)
 end
 
+module Document_position = struct
+  type t = int
+
+  let disconnected : t = 0x01
+  let preceding : t = 0x02
+  let following : t = 0x04
+  let contains : t = 0x08
+  let contained_by : t = 0x10
+  let implementation_specific = 0x20
+end
+
 type t = Private.node
 
 module Make (T : sig
   type t
 end) =
 struct
+  (* TODO include EventTarget *)
+
   external to_node : T.t -> t = "%identity"
   external node_type : T.t -> int = "nodeType" [@@mel.get]
 
@@ -110,8 +123,8 @@ struct
 
   external is_equal : this:T.t -> other:t -> bool = "isEqualNode" [@@mel.send]
 
-  external compare_document_position : this:T.t -> other:t -> int
-    = "compareDocumentPosition"
+  external compare_document_position :
+    this:T.t -> other:t -> Document_position.t = "compareDocumentPosition"
   [@@mel.send]
 
   external contains : this:T.t -> other:t -> bool = "contains" [@@mel.send]

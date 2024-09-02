@@ -1,11 +1,11 @@
 external fetch : string -> ?init:Request.init -> unit -> Response.t Js.Promise.t
   = "fetch"
 
-let fetch url ?method' ?body headers ?referrer ?referrer_policy ?mode
-    ?credentials ?cache ?redirect ?integrity ?keepalive ?signal () =
+let fetch ?method_ ?body headers ?referrer ?referrer_policy ?mode ?credentials
+    ?cache ?redirect ?integrity ?keepalive ?signal url =
   fetch url
     ~init:
-      (Request.init ?_method:method' ?headers ?body ?referrer
+      (Request.init ?method_ ?headers ?body ?referrer
          ?referrerPolicy:
            (Option.map Request.ReferrerPolicy.to_string referrer_policy)
          ?mode:(Option.map Request.Mode.to_string mode)

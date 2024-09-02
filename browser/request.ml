@@ -216,7 +216,7 @@ type t
 type init
 
 external init :
-  ?_method:string ->
+  ?method_:string ->
   ?body:Body.t ->
   ?headers:Headers.t ->
   ?referrer:string ->
@@ -234,11 +234,11 @@ external init :
 
 external create : string -> ?init:init -> unit -> t = "Request" [@@mel.new]
 
-let create url ?method' ?body ?headers ?referrer ?referrer_policy ?mode
+let create url ?method_ ?body ?headers ?referrer ?referrer_policy ?mode
     ?credentials ?cache ?redirect ?integrity ?keepalive ?signal () =
   create url
     ~init:
-      (init ?_method:method' ?headers ?body ?referrer
+      (init ?method_ ?headers ?body ?referrer
          ?referrerPolicy:(Option.map ReferrerPolicy.to_string referrer_policy)
          ?mode:(Option.map Mode.to_string mode)
          ?credentials:(Option.map Credentials.to_string credentials)
@@ -247,9 +247,9 @@ let create url ?method' ?body ?headers ?referrer ?referrer_policy ?mode
          ?integrity ?keepalive ?signal ())
     ()
 
-external method' : t -> string = "method" [@@mel.get]
+external method_ : t -> string = "method" [@@mel.get]
 
-let method' req = Method.of_string (method' req)
+let method_ req = Method.of_string (method_ req)
 
 external url : t -> string = "url" [@@mel.get]
 external headers : t -> Headers.t = "headers" [@@mel.get]

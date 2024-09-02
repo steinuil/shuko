@@ -12,10 +12,13 @@ struct
   external style_sheets : T.t -> Style_sheet_list.t = "styleSheets" [@@mel.get]
 
   (* TODO this returns an ObservableArray *)
-  (* TODO setter *)
   external adopted_style_sheets : T.t -> Css_style_sheet.t array
     = "adoptedStyleSheets"
   [@@mel.get]
+
+  external set_adopted_style_sheets : T.t -> Css_style_sheet.t array -> unit
+    = "adoptedStyleSheets"
+  [@@mel.set]
 
   external picture_in_picture_element : T.t -> Private.element option
     = "pictureInPictureElement"

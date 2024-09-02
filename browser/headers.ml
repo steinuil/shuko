@@ -13,6 +13,7 @@ external delete : string -> unit = "delete" [@@mel.send.pipe: t]
 external get : string -> string option = "get"
 [@@mel.send.pipe: t] [@@mel.return nullable]
 
+external get_set_cookie : t -> string array = "getSetCookie" [@@mel.send]
 external has : string -> bool = "has" [@@mel.send.pipe: t]
 external set : name:string -> value:string -> unit = "set" [@@mel.send.pipe: t]
 

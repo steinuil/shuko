@@ -18,3 +18,5 @@ external create_document :
 external create_html_document : ?title:string -> unit -> Private.document
   = "createHTMLDocument"
 [@@mel.send.pipe: t]
+
+(* [hasFeature] is intentionally omitted. *)

@@ -1,5 +1,20 @@
 type t = Private.element
 
+module Scroll_behavior = struct
+  type t = Auto | Instant | Smooth
+
+  let to_string = function
+    | Auto -> "auto"
+    | Instant -> "instant"
+    | Smooth -> "smooth"
+
+  let of_string = function
+    | "auto" -> Auto
+    | "instant" -> Instant
+    | "smooth" -> Smooth
+    | e -> invalid_arg ("Unknown ScrollBehavior: " ^ e)
+end
+
 module Make (T : sig
   type t
 end) =
@@ -79,7 +94,7 @@ struct
   external remove_attribute_node : Attr.t -> Attr.t = "removeAttributeNode"
   [@@mel.send.pipe: T.t]
 
-  (* TODO *)
+  (* TODO attachShadow, shadowRoot *)
 
   external closest : string -> t option = "closest"
   [@@mel.send.pipe: T.t] [@@mel.return nullable]
@@ -99,8 +114,6 @@ struct
     = "getElementsByClassName"
   [@@mel.send.pipe: T.t]
 
-  (* TODO *)
-
   include Parent_node_mixin.Make (struct
     type nonrec t = t
   end)
@@ -117,7 +130,7 @@ struct
     type nonrec t = t
   end)
 
-  (* TODO *)
+  (* TODO requestFullscreen, onfullscreenchange, onfullscreenerror *)
 
   external set_html_unsafe : string -> unit = "setHTMLUnsafe"
   [@@mel.send.pipe: T.t]
@@ -136,7 +149,10 @@ struct
   let set_html input ?sanitizer el =
     set_html input ~options:(set_html_options ?sanitizer ()) el
 
-  (* TODO *)
+  (* TODO pseudo *)
+  (* TODO include Region*)
+  (* TODO part *)
+  (* TODO computedStyleMap *)
 
   external get_client_rects : Dom_rect_list.t = "getClientRects"
   [@@mel.send.pipe: T.t]
@@ -144,13 +160,77 @@ struct
   external get_bounding_client_rect : Dom_rect.t = "getBoundingClientRect"
   [@@mel.send.pipe: T.t]
 
-  (* TODO *)
+  type check_visibility_options
+
+  external check_visibility_options :
+    ?checkOpacity:bool ->
+    ?checkVisibilityCSS:bool ->
+    unit ->
+    check_visibility_options = ""
+  [@@mel.obj]
+
+  external check_visibility : check_visibility_options -> unit
+    = "checkVisibility"
+  [@@mel.send.pipe: T.t]
+
+  let check_visibility ?check_opacity ?check_visibility_css =
+    check_visibility
+      (check_visibility_options ?checkOpacity:check_opacity
+         ?checkVisibilityCSS:check_visibility_css ())
+
+  type scroll_to_options
+
+  external scroll_to_options :
+    ?behavior:string -> ?left:float -> ?top:float -> unit -> scroll_to_options
+    = ""
+  [@@mel.obj]
+
+  external scroll : scroll_to_options -> unit = "scroll" [@@mel.send.pipe: T.t]
+
+  let scroll ?behavior ?left ?top =
+    scroll (scroll_to_options ?behavior ?left ?top ())
+
+  external scroll_coords : x:float -> y:float -> unit = "scroll"
+  [@@mel.send.pipe: T.t]
+
+  external scroll_to : scroll_to_options -> unit = "scrollTo"
+  [@@mel.send.pipe: T.t]
+
+  let scroll_to ?behavior ?left ?top =
+    scroll_to (scroll_to_options ?behavior ?left ?top ())
+
+  external scroll_to_coords : x:float -> y:float -> unit = "scrollTo"
+  [@@mel.send.pipe: T.t]
+
+  external scroll_by : scroll_to_options -> unit = "scrollBy"
+  [@@mel.send.pipe: T.t]
+
+  let scroll_by ?behavior ?left ?top =
+    scroll_by (scroll_to_options ?behavior ?left ?top ())
+
+  external scroll_by_coords : x:float -> y:float -> unit = "scrollBy"
+  external scroll_top : T.t -> float = "scrollTop" [@@mel.get]
+  external set_scroll_top : T.t -> float -> unit = "scrollTop" [@@mel.set]
+  external scroll_left : T.t -> float = "scrollLeft" [@@mel.get]
+  external set_scroll_left : T.t -> float -> unit = "scrollLeft" [@@mel.set]
+  external scroll_width : T.t -> float = "scrollWidth" [@@mel.get]
+  external scroll_height : T.t -> float = "scrollHeight" [@@mel.get]
+  external client_top : T.t -> float = "clientTop" [@@mel.get]
+  external client_left : T.t -> float = "clientLeft" [@@mel.get]
+  external client_width : T.t -> float = "clientWidth" [@@mel.get]
+  external client_height : T.t -> float = "clientHeight" [@@mel.get]
+
+  (* TODO include Geometry_utils *)
 
   include Inner_html_mixin.Make (struct
     type nonrec t = t
   end)
 
-  (* TODO *)
+  (* TODO outerHTML, insertAdjacentHTML *)
+  (* TODO setPointerCapter, releasePointerCapture, hasPointerCapture *)
+  (* TODO requestPointerLock *)
+  (* TODO include ARIAMixin *)
+  (* TODO include Animatable *)
 end
 
 include Make (struct

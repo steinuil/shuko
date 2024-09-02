@@ -14,7 +14,7 @@ module Make (T : sig
 end) =
 struct
   external size : T.t -> int = "size" [@@mel.get]
-  external type' : T.t -> string = "type" [@@mel.get]
+  external type_ : T.t -> string = "type" [@@mel.get]
 
   external slice : ?start:int -> ?_end:int -> ?content_type:string -> T.t
     = "slice"
@@ -34,23 +34,23 @@ include Make (struct
   type nonrec t = t
 end)
 
-external init : ?_type:string -> ?endings:string -> unit -> init = ""
+external init : ?type_:string -> ?endings:string -> unit -> init = ""
 [@@mel.obj]
 
 external create : _ -> init -> t = "Blob" [@@mel.new]
 
-let of_blob ?type' ?endings (blob : t) =
+let of_blob ?type_ ?endings (blob : t) =
   create blob
-    (init ?_type:type' ?endings:(Option.map Ending_type.to_string endings) ())
+    (init ?type_ ?endings:(Option.map Ending_type.to_string endings) ())
 
-let of_buffer_source ?type' ?endings (buffer_source : Buffer_source.t) =
+let of_buffer_source ?type_ ?endings (buffer_source : Buffer_source.t) =
   create buffer_source
-    (init ?_type:type' ?endings:(Option.map Ending_type.to_string endings) ())
+    (init ?type_ ?endings:(Option.map Ending_type.to_string endings) ())
 
-let of_string ?type' ?endings (string : string) =
+let of_string ?type_ ?endings (string : string) =
   create string
-    (init ?_type:type' ?endings:(Option.map Ending_type.to_string endings) ())
+    (init ?type_ ?endings:(Option.map Ending_type.to_string endings) ())
 
-let create ?type' ?endings () =
+let create ?type_ ?endings () =
   create Js.undefined
-    (init ?_type:type' ?endings:(Option.map Ending_type.to_string endings) ())
+    (init ?type_ ?endings:(Option.map Ending_type.to_string endings) ())

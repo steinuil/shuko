@@ -7,3 +7,8 @@ external item : int -> Private.element option = "item"
 
 external named_item : string -> Private.element option = "namedItem"
 [@@mel.send.pipe: t] [@@mel.return nullable]
+
+include Iterable.Symbol_iterator (struct
+  type nonrec t = t
+  type value = Private.element
+end)

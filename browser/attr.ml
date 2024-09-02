@@ -16,3 +16,5 @@ external value : t -> string = "value" [@@mel.get]
 
 external owner_element : t -> Private.element option = "ownerElement"
 [@@mel.get] [@@mel.return nullable]
+
+(* [specified] is not provided because it's always true. *)

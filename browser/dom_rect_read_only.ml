@@ -1,6 +1,7 @@
 type t
 
-external create : x:float -> y:float -> width:float -> height:float -> t
+external create :
+  ?x:float -> ?y:float -> ?width:float -> ?height:float -> unit -> t
   = "DOMRectReadOnly"
 [@@mel.new]
 

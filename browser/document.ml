@@ -4,6 +4,7 @@ include Node.Make (struct
   type nonrec t = t
 end)
 
+external document : t = "document"
 external create : unit -> t = "Document" [@@mel.new]
 
 external implementation : t -> Dom_implementation.t = "implementation"

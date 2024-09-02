@@ -1,12 +1,12 @@
 type t
 
-external create : x:float -> y:float -> width:float -> height:float -> t
-  = "DOMRect"
-[@@mel.new]
-
 include Dom_rect_read_only.Make (struct
   type nonrec t = t
 end)
+
+external create :
+  ?x:float -> ?y:float -> ?width:float -> ?height:float -> unit -> t = "DOMRect"
+[@@mel.new]
 
 external of_read_only : Dom_rect_read_only.t -> t = "fromRect"
 [@@mel.scope "DOMRect"]
