@@ -15,6 +15,7 @@ external init :
   ?composed:bool ->
   unit ->
   init = ""
+[@@mel.obj]
 
 external create : string -> init -> t = "CloseEvent" [@@mel.new]
 
