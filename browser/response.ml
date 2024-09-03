@@ -45,9 +45,9 @@ external redirect : string -> ?status:int -> unit -> t = "redirect"
 external of_json : Js.Json.t -> ?init:init -> unit -> t = "json"
 [@@mel.scope "Response"]
 
-external type' : t -> string = "type" [@@mel.get]
+external type_ : t -> string = "type" [@@mel.get]
 
-let type' resp = Type.of_string (type' resp)
+let type_ resp = Type.of_string (type_ resp)
 
 external url : t -> string = "url" [@@mel.get]
 external redirected : t -> bool = "redirected" [@@mel.get]

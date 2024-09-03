@@ -21,7 +21,7 @@ module Method = struct
     | Options -> "OPTIONS"
     | Trace -> "TRACE"
     | Patch -> "PATCH"
-    | Other method' -> method'
+    | Other method_ -> method_
 
   let of_string = function
     | "GET" -> Get
@@ -33,7 +33,7 @@ module Method = struct
     | "OPTIONS" -> Options
     | "TRACE" -> Trace
     | "PATCH" -> Patch
-    | method' -> Other method'
+    | method_ -> Other method_
 end
 
 module Destination = struct
