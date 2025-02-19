@@ -34,11 +34,12 @@
         devPackagesQuery = {
           ocaml-lsp-server = "*";
           ocamlformat = "*";
-          utop = "*";
+          utop = "2.15.0";
         };
         repos = [ opam-repository ];
         query = devPackagesQuery // {
-          ocaml-base-compiler = "5.2.0";
+          ocaml-base-compiler = "5.3.0";
+          ocamlfind = "1.9.6";
         };
         scope = on.buildDuneProject { inherit repos; } package ./. query;
         overlay = final: prev: {
@@ -48,7 +49,7 @@
             doNixSupport = false;
           });
         };
-        scope' = scope.overrideScope' overlay;
+        scope' = scope.overrideScope overlay;
         # The main package containing the executable
         main = scope'.${package};
         # Packages from devPackagesQuery
