@@ -1,57 +1,79 @@
-[@@@mel.config { flags = [| "-unboxed-types" |] }]
+(** {1 Fundamental objects} *)
 
-module Number = Number
+module Undefined = Undefined
+module Null = Null
 
-module String = struct
-  type t = string
-end
+(* TODO: Object *)
+(* TODO: Function *)
+module Bool = Bool
+(* TODO: Symbol *)
 
-module Float = struct
-  type t = float
+(** {1 Error objects} *)
 
-  external epsilon : float = "EPSILON" [@@mel.scope "Number"]
-end
+exception Error = Caml_js_exceptions.Error
 
-module Int = struct
-  type t = int
+(** {1 Numbers and dates} *)
 
-  external is_nan : int -> bool = "isNaN" [@@mel.scope "Number"]
+module Float = Float
+module Int = Int
+module Big_int = Big_int
+module Date = Date
+(* TODO: Temporal *)
 
-  external to_exponential : ?digits:int -> string = "toExponential"
-  [@@mel.send.pipe: int]
+(** {1 Text processing} *)
 
-  external to_precision : ?digits:int -> string = "toPrecision"
-  [@@mel.send.pipe: int]
+module String = String
+module Regexp = Regexp
 
-  external to_string : ?radix:int -> string = "toString" [@@mel.send.pipe: t]
-  external unsafe_from_string : string -> int = "Number"
-  external is_integer : int -> bool = "isInteger" [@@mel.scope "Number"]
+(** {1 Indexed collections} *)
 
-  external is_safe_integer : int -> bool = "isSafeInteger"
-  [@@mel.scope "Number"]
+module Array = Array
+(* TODO: Int8Array, ... *)
 
-  external to_float : int -> float = "%identity"
-  external ( = ) : int -> int -> bool = "%equal"
-  external ( <> ) : int -> int -> bool = "%notequal"
-  external equal : int -> int -> bool = "%equal"
-  external ( < ) : int -> int -> bool = "%lessthan"
-  external ( > ) : int -> int -> bool = "%greaterthan"
-  external ( <= ) : int -> int -> bool = "%lessequal"
-  external ( >= ) : int -> int -> bool = "%greaterequal"
-  external compare : int -> int -> int = "%compare"
-  external ( + ) : int -> int -> int = "%addint"
-  external ( - ) : int -> int -> int = "%subint"
-  external ( ~- ) : int -> int = "%negint"
-  external ( * ) : int -> int -> int = "%mulint"
-  external ( / ) : int -> int -> int = "%divint"
-  external ( ** ) : int -> int -> int = "pow" [@@mel.scope "Math"]
-  external ( lsl ) : int -> int -> int = "%lslint"
-  external ( lor ) : int -> int -> int = "%orint"
-  external ( land ) : int -> int -> int = "%andint"
-  external ( mod ) : int -> int -> int = "%modint"
-  external ( lsr ) : int -> int -> int = "%lsrint"
-  external ( lxor ) : int -> int -> int = "%xorint"
-  external ( asr ) : int -> int -> int = "%asrint"
-  external abs : int -> int = "abs" [@@mel.scope "Math"]
-  external clz32 : int -> int = "clz32" [@@mel.scope "Math"]
-end
+(** {1 Keyed collections} *)
+
+(* TODO Map *)
+module Set = Set
+(* TODO WeakMap *)
+(* TODO WeakSet *)
+
+module Dict = Dict
+
+(** {1 Structured data} *)
+
+(* TODO ArrayBuffer *)
+(* TODO SharedArrayBuffer *)
+(* TODO DataView *)
+(* TODO Atomics *)
+module Json = Json
+
+(** {1 Managing memory} *)
+
+(* TODO WeakRef *)
+(* TODO FinalizationRegistry *)
+
+(** {1 Control abstraction objects} *)
+
+module Promise = Promise
+module Array_like = Array_like
+module Iterator_result = Iterator_result
+module Iterator = Iterator
+module Async_iterator = Async_iterator
+module Iterable = Iterable
+module Async_iterable = Async_iterable
+module Mixins = Mixins
+
+(* TODO GeneratorFunction *)
+(* TODO AsyncGeneratorFunction *)
+(* TODO Generator *)
+(* TODO AsyncGenerator *)
+(* TODO AsyncFunction *)
+
+(** {1 Reflection} *)
+
+(* TODO Reflect *)
+(* TODO Proxy *)
+
+(** {1 Internationalization} *)
+
+module Intl = Intl

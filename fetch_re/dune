@@ -1,6 +1,0 @@
-(library
- (name fetch_re)
- (libraries melange)
- (preprocess
-  (pps melange.ppx))
- (modes melange))

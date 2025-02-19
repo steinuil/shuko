@@ -11,7 +11,7 @@ bug-reports: "https://github.com/steinuil/shuko/issues"
 depends: [
   "dune" {>= "3.8"}
   "melange" {= "5.0.0-53"}
-  "odoc" {with-doc}
+  "odoc" {>= "2.4.4"}
 ]
 build: [
   ["dune" "subst"] {dev}

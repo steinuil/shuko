@@ -1,8 +1,8 @@
 (library
  (name es)
+ (public_name shuko.es)
  (modes melange)
  (libraries melange)
  (flags -nopervasives)
  (preprocess
   (pps melange.ppx)))
-

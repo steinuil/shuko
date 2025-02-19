@@ -21,7 +21,9 @@
  (allow_empty)
  (name shuko)
  (synopsis "WEBIRC client")
- (description
-  "WEBIRC client")
+ (description "WEBIRC client")
  (depends
-  (melange (= 5.0.0-53))))
+  (melange
+   (= 5.0.0-53))
+  (odoc
+   (>= 2.4.4))))

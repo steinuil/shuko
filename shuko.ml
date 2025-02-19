@@ -41,8 +41,6 @@ let () =
          (Private_message { target = "test"; message = "Testing with tags!" }));
   ()
 
-let () = Es.Int.to_exponential 123 |> Js.log
-
 let () =
   let test message ~expected ~msg =
     assert_eq message ~expected ~got:(Irc.Formatting.parse msg)
@@ -96,6 +94,11 @@ let () =
       |];
   ()
 
+let _ =
+  Es.Promise.make (fun ~resolve ~reject:_ ->
+      Browser.Window.set_timeout ~f:(fun () -> (resolve "tfw" [@u])) ~delay:1000)
+  |> Es.Promise.then_ ~f:(fun v -> Js.log v)
+
 open Browser
 
 let document = Window.document Window.window
@@ -121,8 +124,8 @@ let () =
   |> Js.Array.forEach ~f:(fun (k, _v) -> Js.log k);
   ()
 
-let () =
-  let ws = Web_socket.create "ws://localhost:1234" () in
-  ws
-  |> Web_socket.add_event_listener
-       (`_open (fun _msg -> ws |> Web_socket.send_string ""))
+(* let () = *)
+(* let ws = Web_socket.create "ws://localhost:1234" () in *)
+(* ws *)
+(* |> Web_socket.add_event_listener *)
+(* (`_open (fun _msg -> ws |> Web_socket.send_string "")) *)
