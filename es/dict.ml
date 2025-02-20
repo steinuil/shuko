@@ -12,6 +12,10 @@ external set : 'a t -> key:string -> value:'a -> unit = ""
 [@@mel.set_index]
 (** Sets the item at [index] to [value]. *)
 
+external of_entries : (string * 'a) array -> 'a t = "fromEntries"
+[@@mel.scope "Object"]
+(** Returns a new dict from an iterable of (key, value) pairs. *)
+
 external entries : 'a t -> (string * 'a) Iterator.t = "entries" [@@mel.send]
 external values : 'a t -> 'a Iterator.t = "values" [@@mel.send]
 external keys : 'a t -> 'a Iterator.t = "keys" [@@mel.send]

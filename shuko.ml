@@ -32,7 +32,7 @@ let () =
     ~expected:
       (Message.make
          ~tags:
-           (Js.Dict.fromArray
+           (Es.Dict.of_entries
               [|
                 ("aaa", Some "bbb");
                 ("ccc", None);
@@ -114,14 +114,14 @@ let () =
   let h = Headers.of_array [| ("tfw", "gf") |] in
   h |> Headers.set ~name:"ayy" ~value:"lmao";
   h |> Headers.to_iterable |> Iterable.to_array
-  |> Js.Array.forEach ~f:(fun (k, _v) -> Js.log k);
+  |> Es.Array.for_each ~f:(fun (k, _v) -> Js.log k);
   let r = Request.create "ayy" () in
   let r2 = Request.copy r |> ignore in
   ignore r2;
   let url_search_params = Url_search_params.create () in
   url_search_params |> Url_search_params.set ~value:"lmao" ~name:"ayy";
   url_search_params |> Url_search_params.to_iterable |> Iterable.to_array
-  |> Js.Array.forEach ~f:(fun (k, _v) -> Js.log k);
+  |> Es.Array.for_each ~f:(fun (k, _v) -> Js.log k);
   ()
 
 (* let () = *)

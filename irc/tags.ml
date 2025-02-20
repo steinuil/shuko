@@ -1,12 +1,14 @@
-type t = string option Js.Dict.t
+open Es
+
+type t = string option Es.Dict.t
 
 let to_string tags =
-  tags |> Js.Dict.entries
-  |> Js.Array.map ~f:(fun (key, value) ->
+  tags |> Dict.entries |> Iterator.to_seq
+  |> Seq.map (fun (key, value) ->
          match value with None -> key | Some value -> key ^ "=" ^ value)
-  |> Js.Array.join ~sep:";"
+  |> Stdlib.Array.of_seq |> Array.join ~sep:";"
 
 let of_string str =
-  str |> Js.String.split ~sep:";"
-  |> Js.Array.map ~f:(Utils.split_off ~delimiter:"=")
-  |> Js.Dict.fromArray
+  str |> String.split ~sep:";"
+  |> Array.map ~f:(Utils.split_off ~delimiter:"=")
+  |> Dict.of_entries

@@ -1,4 +1,4 @@
-type t
+type t = Js.re
 
 module Match_result = struct
   type t
@@ -73,11 +73,12 @@ external unicode_sets : t -> bool = "unicodeSets"
 [@@mel.get]
 (** Whether or not the v flag, an upgrade to the u mode, is enabled. *)
 
-external exec : string -> (t[@mel.this]) -> Match_result.t option = "exec"
+external exec : string -> pattern:(t[@mel.this]) -> Match_result.t option
+  = "exec"
 [@@mel.send] [@@mel.return null_to_opt]
 (** Executes a search for a match in its string parameter. *)
 
-external test : string -> (t[@mel.this]) -> bool = "test"
+external test : string -> pattern:(t[@mel.this]) -> bool = "test"
 [@@mel.send]
 (** Tests for a match in its string parameter. *)
 

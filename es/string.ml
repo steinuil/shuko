@@ -13,6 +13,10 @@ external length : t -> int = "length"
 [@@mel.get]
 (** Reflects the [length] of the string. *)
 
+external get : t -> int -> char option = ""
+[@@mel.get_index] [@@mel.return undefined_to_opt]
+(** Returns the characters at the specified index. *)
+
 external at : index:int -> (t[@mel.this]) -> t = "at"
 [@@mel.send]
 (** Returns the character (exactly one UTF-16 code unit) at the specified
@@ -80,7 +84,7 @@ external replace : sub:t -> by:t -> (t[@mel.this]) -> t = "replace"
 [@@mel.send]
 (** Replace the first occurrence of [sub] with [by]. *)
 
-external replace_regexp : pattern:Regexp.t -> by:t -> (t[@mel.this]) -> t
+external replace_re : pattern:Regexp.t -> by:t -> (t[@mel.this]) -> t
   = "replace"
 [@@mel.send]
 (** Replace the first occurrence of [pattern] with [by]. *)
@@ -89,8 +93,7 @@ external replace_all : sub:t -> by:t -> (t[@mel.this]) -> t = "replaceAll"
 [@@mel.send]
 (** Replace all occurrences of [sub] with [by]. *)
 
-external replace_all_regexp : sub:t -> by:t -> (t[@mel.this]) -> t
-  = "replaceAll"
+external replace_all_re : sub:t -> by:t -> (t[@mel.this]) -> t = "replaceAll"
 [@@mel.send]
 (** Replace all occurrences of [pattern] with [by]. *)
 
@@ -131,10 +134,16 @@ external slice : start:int -> ?end_:int -> (t[@mel.this]) -> t = "slice"
 [@@mel.send]
 (** Extract a section of a string and returns a new string. *)
 
-external split : sep:string -> ?limit:int -> (t[@mel.this]) -> t = "split"
+external split : sep:string -> ?limit:int -> (t[@mel.this]) -> t array = "split"
 [@@mel.send]
 (** Returns an array of strings populated by splitting the calling string at
     occurrences of the substring [sep]. *)
+
+external split_re :
+  pattern:Regexp.t -> ?limit:int -> (t[@mel.this]) -> t option array = "split"
+[@@mel.send]
+(** Returns an array of strings populated by splitting the calling string at
+    occurrences of the pattern [pattern]. *)
 
 external substring : start:int -> ?end_:int -> (t[@mel.this]) -> t = "substring"
 [@@mel.send]

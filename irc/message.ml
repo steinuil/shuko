@@ -1,26 +1,28 @@
+open Es
+
 type t = { tags : Tags.t option; prefix : Prefix.t option; command : Command.t }
 
 let make ?tags ?prefix command = { tags; prefix; command }
 
+let split_on_whitespace =
+  Utils.split_off_regex ~delimiter:[%mel.re {re|/\s+/|re}]
+
 let parse line =
-  let split_on_whitespace =
-    Utils.split_off_regex ~delimiter:[%mel.re {re|/\s+/|re}]
-  in
   let tags, line =
-    if Js.String.startsWith ~prefix:"@" line then
+    if String.starts_with ~prefix:"@" line then
       match split_on_whitespace line with
       | None -> (None, line)
       | Some (tags, line) ->
-          let tags = Js.String.slice ~start:1 tags |> Tags.of_string in
+          let tags = String.slice ~start:1 tags |> Tags.of_string in
           (Some tags, line)
     else (None, line)
   in
   let prefix, line =
-    if Js.String.startsWith ~prefix:":" line then
+    if String.starts_with ~prefix:":" line then
       match split_on_whitespace line with
       | None -> (None, line)
       | Some (prefix, line) ->
-          let prefix = Js.String.slice ~start:1 prefix |> Prefix.of_string in
+          let prefix = String.slice ~start:1 prefix |> Prefix.of_string in
           (Some prefix, line)
     else (None, line)
   in
@@ -33,20 +35,20 @@ let parse line =
     match line with
     | None -> [||]
     | Some line -> (
-        if Js.String.startsWith ~prefix:":" line then
-          let trailing = Js.String.slice ~start:1 line in
+        if String.starts_with ~prefix:":" line then
+          let trailing = String.slice ~start:1 line in
           [| trailing |]
         else
           let params, trailing = Utils.split_off ~delimiter:" :" line in
           let params =
-            Js.String.splitByRe ~regexp:[%mel.re {re|/\s+/|re}] params
+            String.split_re ~pattern:[%mel.re {re|/\s+/|re}] params
             |> Utils.keep_some
           in
           match trailing with
           | None -> params
           | Some trailing ->
-              let trailing = Js.String.slice ~start:1 trailing in
-              Js.Array.push ~value:trailing params |> ignore;
+              let trailing = String.slice ~start:1 trailing in
+              Array.push ~value:trailing params |> ignore;
               params)
   in
   let command = Command.parse command params in

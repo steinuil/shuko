@@ -1,3 +1,5 @@
+open Es
+
 type t =
   | Action of string
   | Client_info_query
@@ -21,7 +23,7 @@ let parse_query command params =
   | "CLIENTINFO", None -> Client_info_query
   | "CLIENTINFO", Some commands ->
       Client_info_reply
-        (Js.String.splitByRe ~regexp:[%mel.re {re|/\s+/|re}] commands
+        (String.split_re ~pattern:[%mel.re {re|/\s+/|re}] commands
         |> Utils.keep_some)
   | "FINGER", None -> Finger_query
   | "FINGER", Some info -> Finger_reply info
@@ -39,8 +41,7 @@ let parse_query command params =
 let string_of_query = function
   | Action params -> "ACTION " ^ params
   | Client_info_query -> "CLIENTINFO"
-  | Client_info_reply commands ->
-      "CLIENTINFO " ^ Js.Array.join ~sep:" " commands
+  | Client_info_reply commands -> "CLIENTINFO " ^ Array.join ~sep:" " commands
   | Finger_query -> "FINGER"
   | Finger_reply info -> "FINGER " ^ info
   | Ping data -> "PING " ^ data
@@ -56,15 +57,15 @@ let string_of_query = function
   | Unknown (command, Some params) -> command ^ " " ^ params
 
 let delim = "\001"
-let is_ctcp msg = Js.String.startsWith ~prefix:delim msg
+let is_ctcp msg = String.starts_with ~prefix:delim msg
 
 let parse message =
   if not (is_ctcp message) then None
   else
     let message =
-      if Js.String.endsWith ~suffix:delim message then
-        Js.String.slice ~start:1 ~end_:(Js.String.length message - 1) message
-      else Js.String.slice ~start:1 message
+      if String.ends_with ~suffix:delim message then
+        String.slice ~start:1 ~end_:(String.length message - 1) message
+      else String.slice ~start:1 message
     in
     match Utils.split_off_regex ~delimiter:[%mel.re {re|/\s+/|re}] message with
     | None -> Some (parse_query message None)

@@ -1,3 +1,5 @@
+open Es
+
 module Color = struct
   type t =
     | White
@@ -38,7 +40,7 @@ module Color = struct
     | 15 -> Light_grey
     | 99 -> Default
     | num when num >= 16 && num <= 98 -> Extended num
-    | other -> invalid_arg ("Unknown color code: " ^ Js.Int.toString other)
+    | other -> invalid_arg ("Unknown color code: " ^ Int.to_string other)
 
   let of_string = function
     | "0" | "00" -> White
@@ -77,12 +79,12 @@ module Color = struct
     | Pink -> "13"
     | Grey -> "14"
     | Light_grey -> "15"
-    | Extended c -> Js.Int.toString c
+    | Extended c -> Int.to_string c
     | Default -> "99"
 end
 
 let string_of_hex_color c =
-  Js.Int.toString ~radix:16 c |> Utils.pad_start ~length:6 ~pad_string:"0"
+  Int.to_string ~radix:16 c |> String.pad_start ~width:6 ~fill:"0"
 
 module Color_command = struct
   type 'a t = Reset | Fg of 'a | Fg_bg of 'a * 'a
@@ -120,21 +122,21 @@ module Token = struct
 end
 
 let parse_color_format_with re of_string message i =
-  let rest = Js.String.slice ~start:i message in
-  match Js.Re.exec re ~str:rest with
+  let rest = String.slice ~start:i message in
+  match Regexp.exec ~pattern:re rest with
   | None -> (Color_command.Reset, i)
   | Some m -> (
-      let captures = Js.Re.captures m in
-      let fg = captures.(1) |> Js.Nullable.toOption in
-      let bg = captures.(3) |> Js.Nullable.toOption in
+      let captures = Regexp.Match_result.matches m in
+      let fg = captures.(1) in
+      let bg = captures.(3) in
       match (fg, bg) with
       | None, _ -> (Reset, i)
       | Some fg, None ->
-          let i = i + Js.String.length fg in
+          let i = i + String.length fg in
           let fg = of_string fg in
           (Fg fg, i)
       | Some fg, Some bg ->
-          let i = i + Js.String.length fg + 1 + Js.String.length bg in
+          let i = i + String.length fg + 1 + String.length bg in
           let fg = of_string fg in
           let bg = of_string bg in
           (Fg_bg (fg, bg), i))
@@ -143,7 +145,7 @@ let parse_color_format =
   parse_color_format_with [%mel.re {re|/^([0-9]{1,2})(,([0-9]{1,2}))?/|re}]
     Color.of_string
 
-let color_of_hex_string str = int_of_string ("0x" ^ str)
+let color_of_hex_string str = Int.unsafe_of_string ~radix:16 ("0x" ^ str)
 
 let parse_hex_color_format =
   parse_color_format_with
@@ -153,18 +155,17 @@ let parse_hex_color_format =
 let parse message =
   let out : Token.t array = [||] in
   let rec parse in_string i =
-    if i >= Js.String.length message then (
+    if i >= String.length message then (
       match in_string with
       | None -> out
       | Some str_i ->
           let str =
-            Js.String.slice ~start:str_i ~end_:(Js.String.length message)
-              message
+            String.slice ~start:str_i ~end_:(String.length message) message
           in
-          if str <> "" then Js.Array.push ~value:(Token.Text str) out |> ignore;
+          if str <> "" then Array.push ~value:(Token.Text str) out |> ignore;
           out)
     else
-      let char = Js.String.charAt ~index:i message in
+      let char = String.char_at ~index:i message in
       let prev_i = i in
       let code, i =
         match char with
@@ -187,20 +188,19 @@ let parse message =
       | None, Some _ -> parse in_string (i + 1)
       | None, None -> parse (Some i) (i + 1)
       | Some code, Some str_i ->
-          let str = Js.String.slice ~start:str_i ~end_:prev_i message in
-          Js.Array.push ~value:(Token.Text str) out |> ignore;
-          Js.Array.push ~value:code out |> ignore;
+          let str = String.slice ~start:str_i ~end_:prev_i message in
+          Array.push ~value:(Token.Text str) out |> ignore;
+          Array.push ~value:code out |> ignore;
           parse None (i + 1)
       | Some code, None ->
-          Js.Array.push ~value:code out |> ignore;
+          Array.push ~value:code out |> ignore;
           parse None (i + 1)
   in
   parse None 0
 
-let to_string parts =
-  Js.Array.map ~f:Token.to_string parts |> Js.Array.join ~sep:""
+let to_string parts = Array.map ~f:Token.to_string parts |> Array.join ~sep:""
 
 let strip =
-  Js.Array.reduce
+  Array.reduce
     ~f:(fun str -> function Token.Text t -> str ^ t | _ -> str)
     ~init:""

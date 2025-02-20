@@ -37,11 +37,11 @@ external length : _ t -> int = "length"
 [@@mel.get]
 (** Reflects the number of elements in an array. *)
 
-external get : 'a t -> index:int -> 'a option = ""
+external get : 'a t -> int -> 'a option = ""
 [@@mel.get_index] [@@mel.return undefined_to_opt]
 (** Gets an element from the array at the given [index]. *)
 
-external set : 'a t -> index:int -> value:'a -> unit = ""
+external set : 'a t -> int -> value:'a -> unit = ""
 [@@mel.set_index]
 (** Sets the item at [index] to [value]. *)
 
@@ -99,26 +99,53 @@ external find_last_index : f:('a -> int -> bool) -> ('a t[@mel.this]) -> int
 
 (** {2 Functional operations} *)
 
-external map : f:(('a -> int -> 'b)[@mel.uncurry]) -> ('a t[@mel.this]) -> 'b t
+external map : f:(('a -> 'b)[@mel.uncurry]) -> ('a t[@mel.this]) -> 'b t = "map"
+[@@mel.send]
+(** Returns a new array containing the results of invoking a function on every
+    element in the calling array. *)
+
+external mapi : f:(('a -> int -> 'b)[@mel.uncurry]) -> ('a t[@mel.this]) -> 'b t
   = "map"
 [@@mel.send]
 (** Returns a new array containing the results of invoking a function on every
     element in the calling array. *)
 
-external flat_map :
+external flat_map : f:(('a -> 'b t)[@mel.uncurry]) -> ('a t[@mel.this]) -> 'b t
+  = "flatMap"
+[@@mel.send]
+(** Returns a new array formed by applying a given callback function to each
+    element of the calling array, and then flattening the result by one level.
+*)
+
+external flat_mapi :
   f:(('a -> int -> 'b t)[@mel.uncurry]) -> ('a t[@mel.this]) -> 'b t = "flatMap"
 [@@mel.send]
 (** Returns a new array formed by applying a given callback function to each
     element of the calling array, and then flattening the result by one level.
 *)
 
-external filter :
+external filter : f:(('a -> bool)[@mel.uncurry]) -> ('a t[@mel.this]) -> 'a t
+  = "filter"
+[@@mel.send]
+(** Returns a new array containing all elements of the calling array for which
+    the provided filtering function returns [true]. *)
+
+external filteri :
   f:(('a -> int -> bool)[@mel.uncurry]) -> ('a t[@mel.this]) -> 'a t = "filter"
 [@@mel.send]
 (** Returns a new array containing all elements of the calling array for which
     the provided filtering function returns [true]. *)
 
 external reduce :
+  f:(('acc -> 'a -> 'acc)[@mel.uncurry]) ->
+  init:'acc ->
+  ('a t[@mel.this]) ->
+  'acc = "reduce"
+[@@mel.send]
+(** Executes a user-supplied "reducer" callback function on each element of the
+    array (from left to right), to reduce it to a single value. *)
+
+external reducei :
   f:(('acc -> 'a -> int -> 'acc)[@mel.uncurry]) ->
   init:'acc ->
   ('a t[@mel.this]) ->
@@ -128,6 +155,15 @@ external reduce :
     array (from left to right), to reduce it to a single value. *)
 
 external reduce_right :
+  f:(('acc -> 'a -> 'acc)[@mel.uncurry]) ->
+  init:'acc ->
+  ('a t[@mel.this]) ->
+  'acc = "reduceRight"
+[@@mel.send]
+(** Executes a user-supplied "reducer" callback function on each element of the
+    array (from right to left), to reduce it to a single value. *)
+
+external reduce_righti :
   f:(('acc -> 'a -> int -> 'acc)[@mel.uncurry]) ->
   init:'acc ->
   ('a t[@mel.this]) ->
@@ -136,18 +172,35 @@ external reduce_right :
 (** Executes a user-supplied "reducer" callback function on each element of the
     array (from right to left), to reduce it to a single value. *)
 
-external for_each :
+external for_each : f:(('a -> 'b)[@mel.uncurry]) -> ('a t[@mel.this]) -> unit
+  = "forEach"
+[@@mel.send]
+(** Calls a function for each element in the calling array. *)
+
+external for_eachi :
   f:(('a -> int -> 'b)[@mel.uncurry]) -> ('a t[@mel.this]) -> unit = "forEach"
 [@@mel.send]
 (** Calls a function for each element in the calling array. *)
 
-external every :
+external every : f:(('a -> bool)[@mel.uncurry]) -> ('a t[@mel.this]) -> bool
+  = "every"
+[@@mel.send]
+(** Returns [true] if every element in the calling array satisfies the testing
+    function. *)
+
+external everyi :
   f:(('a -> int -> bool)[@mel.uncurry]) -> ('a t[@mel.this]) -> bool = "every"
 [@@mel.send]
 (** Returns [true] if every element in the calling array satisfies the testing
     function. *)
 
-external some :
+external some : f:(('a -> bool)[@mel.uncurry]) -> ('a t[@mel.this]) -> bool
+  = "some"
+[@@mel.send]
+(** Returns [true] if at least one element in the calling array satisfies the
+    provided testing function. *)
+
+external somei :
   f:(('a -> int -> bool)[@mel.uncurry]) -> ('a t[@mel.this]) -> bool = "some"
 [@@mel.send]
 (** Returns [true] if at least one element in the calling array satisfies the
@@ -178,6 +231,10 @@ external to_spliced : start:int -> delete:int -> add_items:'a array -> 'a t
     index, without modifying the original array.
 
     Like {!splice}, but does not modify the original array. *)
+
+external append : other:'a t -> ('a t[@mel.this]) -> 'a t = "concat"
+[@@mel.send]
+(** Return a new array with the elements of the [other] array appended to it. *)
 
 external concat : 'a t array -> ('a t[@mel.this]) -> 'a t = "concat"
 [@@mel.send] [@@mel.variadic]
@@ -210,7 +267,7 @@ external pop : 'a t -> 'a option = "pop"
 [@@mel.send] [@@mel.return undefined_to_opt]
 (** Removes the last element from an array and returns that element. *)
 
-external push : 'a -> ('a t[@mel.this]) -> int = "push"
+external push : value:'a -> ('a t[@mel.this]) -> int = "push"
 [@@mel.send]
 (** Adds one element to the end of an array, and returns the new length of the
     array. *)
