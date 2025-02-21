@@ -11,13 +11,19 @@ struct
     string ->
     context:Private.node ->
     ?resolver:Xpath_ns_resolver.t ->
-    ?type_:int ->
+    ?type_:
+      ([ `any
+       | `number
+       | `string
+       | `boolean
+       | `unordered_node_iterator
+       | `ordered_node_iterator
+       | `unordered_node_snapshot
+       | `ordered_node_snapshot
+       | `any_ordered_node
+       | `first_ordered_node ]
+      [@mel.int]) ->
     ?result:Xpath_result.t ->
     Xpath_result.t = "evaluate"
   [@@mel.send.pipe: T.t]
-
-  let evaluate expression ~context ?resolver ?type_ ?result t =
-    evaluate expression ~context ?resolver
-      ?type_:(Option.map Xpath_result.Type.to_int type_)
-      ?result t
 end

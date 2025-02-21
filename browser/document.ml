@@ -136,24 +136,9 @@ external referrer : t -> string = "referrer" [@@mel.get]
 external cookie : t -> string = "cookie" [@@mel.get]
 external last_modified : t -> string = "lastModified" [@@mel.get]
 
-module Ready_state = struct
-  type t = Loading | Interactive | Complete
-
-  let to_string = function
-    | Loading -> "loading"
-    | Interactive -> "interactive"
-    | Complete -> "complete"
-
-  let of_string = function
-    | "loading" -> Loading
-    | "interactive" -> Interactive
-    | "complete" -> Complete
-    | e -> invalid_arg ("Unknown DocumentReadyState: " ^ e)
-end
-
-external ready_state : t -> string = "readyState" [@@mel.get]
-
-let ready_state document = Ready_state.of_string (ready_state document)
+external ready_state : t -> [ `loading | `interactive | `complete ]
+  = "readyState"
+[@@mel.get]
 
 (* TODO getter object (DOMString name) *)
 

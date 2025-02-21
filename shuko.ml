@@ -132,8 +132,8 @@ let () =
   |> Es.Array.for_each ~f:(fun (k, _v) -> Js.log k);
   ()
 
-(* let () = *)
-(* let ws = Web_socket.create "ws://localhost:1234" () in *)
-(* ws *)
-(* |> Web_socket.add_event_listener *)
-(* (`_open (fun _msg -> ws |> Web_socket.send_string "")) *)
+(* let () =
+  let ws = Web_socket.create "ws://localhost:1234" () in
+  ws
+  |> Web_socket.add_event_listener
+       (`_open (fun _msg -> ws |> Web_socket.send_string "")) *)

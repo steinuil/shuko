@@ -1,24 +1,3 @@
-module Type = struct
-  type t = Basic | Cors | Default | Error | Opaque | OpaqueRedirect
-
-  let to_string = function
-    | Basic -> "basic"
-    | Cors -> "cors"
-    | Default -> "default"
-    | Error -> "error"
-    | Opaque -> "opaque"
-    | OpaqueRedirect -> "opaqueredirect"
-
-  let of_string = function
-    | "basic" -> Basic
-    | "cors" -> Cors
-    | "default" -> Default
-    | "error" -> Error
-    | "opaque" -> Opaque
-    | "opaqueredirect" -> OpaqueRedirect
-    | e -> invalid_arg ("Unknown RequestType: " ^ e)
-end
-
 type t
 type init
 
@@ -45,9 +24,10 @@ external redirect : string -> ?status:int -> unit -> t = "redirect"
 external of_json : Js.Json.t -> ?init:init -> unit -> t = "json"
 [@@mel.scope "Response"]
 
-external type_ : t -> string = "type" [@@mel.get]
-
-let type_ resp = Type.of_string (type_ resp)
+external type_ :
+  t -> [ `basic | `cors | `default | `error | `opaque | `opaqueredirect ]
+  = "type"
+[@@mel.get]
 
 external url : t -> string = "url" [@@mel.get]
 external redirected : t -> bool = "redirected" [@@mel.get]
