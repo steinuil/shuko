@@ -4,7 +4,13 @@ external of_iterable : 'a Iterable.t -> 'a t = "from"
 [@@mel.scope "Array"]
 (** Create a new array from an {!Iterable.t}. *)
 
-external of_iterable_map : 'a Iterable.t -> f:('a -> int -> 'b) -> 'a t = "from"
+external of_iterable_map : 'a Iterable.t -> f:('a -> 'b) -> 'b t = "from"
+[@@mel.scope "Array"]
+(** Create a new array by callling [f] on each value returned from an
+    {!Iterable.t}. *)
+
+external of_iterable_mapi : 'a Iterable.t -> f:('a -> int -> 'b) -> 'b t
+  = "from"
 [@@mel.scope "Array"]
 (** Create a new array by callling [f] on each value returned from an
     {!Iterable.t}. *)

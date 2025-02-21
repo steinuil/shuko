@@ -16,6 +16,8 @@ external of_entries : (string * 'a) array -> 'a t = "fromEntries"
 [@@mel.scope "Object"]
 (** Returns a new dict from an iterable of (key, value) pairs. *)
 
-external entries : 'a t -> (string * 'a) Iterator.t = "entries" [@@mel.send]
-external values : 'a t -> 'a Iterator.t = "values" [@@mel.send]
-external keys : 'a t -> 'a Iterator.t = "keys" [@@mel.send]
+external entries : 'a t -> (string * 'a) array = "entries"
+[@@mel.scope "Object"]
+
+external values : 'a t -> 'a array = "values" [@@mel.scope "Object"]
+external keys : 'a t -> 'a array = "keys" [@@mel.scope "Object"]

@@ -3,10 +3,10 @@ open Es
 type t = string option Es.Dict.t
 
 let to_string tags =
-  tags |> Dict.entries |> Iterator.to_seq
-  |> Seq.map (fun (key, value) ->
+  tags |> Dict.entries
+  |> Array.map ~f:(fun (key, value) ->
          match value with None -> key | Some value -> key ^ "=" ^ value)
-  |> Stdlib.Array.of_seq |> Array.join ~sep:";"
+  |> Array.join ~sep:";"
 
 let of_string str =
   str |> String.split ~sep:";"
