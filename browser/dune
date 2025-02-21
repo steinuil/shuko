@@ -1,5 +1,6 @@
 (library
  (name browser)
+ (public_name shuko.browser)
  (modes melange)
  (libraries melange)
  (preprocess

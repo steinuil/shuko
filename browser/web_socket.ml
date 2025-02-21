@@ -39,20 +39,22 @@ external binary_type : t -> Binary_type.t = "binaryType" [@@mel.get]
 external set_binary_type : t -> Binary_type.t -> unit = "binaryType" [@@mel.set]
 
 external add_event_listener :
-  ([ `_open of Event.t -> unit
-   | `error of Event.t -> unit
-   | `close of Close_event.t -> unit
-   | `message of Message_event.t -> unit ]
-  [@mel.string]) ->
+  f:
+    ([ `_open of Event.t -> unit
+     | `error of Event.t -> unit
+     | `close of Close_event.t -> unit
+     | `message of Message_event.t -> unit ]
+    [@mel.string]) ->
   unit = "addEventListener"
 [@@mel.send.pipe: t]
 
 external remove_event_listener :
-  ([ `_open of Event.t -> unit
-   | `error of Event.t -> unit
-   | `close of Close_event.t -> unit
-   | `message of Message_event.t -> unit ]
-  [@mel.string]) ->
+  f:
+    ([ `_open of Event.t -> unit
+     | `error of Event.t -> unit
+     | `close of Close_event.t -> unit
+     | `message of Message_event.t -> unit ]
+    [@mel.string]) ->
   unit = "addEventListener"
 [@@mel.send.pipe: t]
 

@@ -1,3 +1,4 @@
+module Global = Global
 module Abort_controller = Abort_controller
 module Abort_signal = Abort_signal
 module Animation = Animation

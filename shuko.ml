@@ -1,8 +1,11 @@
+open Browser.Global
+open Es
+
 let assert_eq message ~expected ~got =
   if expected <> got then (
     Js.Console.error2 "FAILED: " message;
-    Js.Console.error expected;
-    Js.Console.error got)
+    Console.error expected;
+    Console.error got)
   else Js.log2 "PASSED:" message
 
 let () =
@@ -95,17 +98,17 @@ let () =
   ()
 
 let _ =
-  Es.Promise.make (fun ~resolve ~reject:_ ->
-      Browser.Window.set_timeout ~f:(fun () -> (resolve "tfw" [@u])) ~delay:1000)
-  |> Es.Promise.then_map ~f:(fun v -> Js.log v)
+  Promise.make (fun ~resolve ~reject:_ ->
+      set_timeout ~f:(fun () -> (resolve "tfw" [@u])) ~delay_ms:1000)
+  |> Promise.then_map ~f:(fun v -> Js.log v)
 
 let _ =
-  [%mel.raw {|{"a": 1, "b": 2, "c": 3, "d": 4}|}] |> Es.Dict.entries
-  |> Es.Array.iterator
-  |> Es.Iterator.filter ~f:(fun (key, _) -> key != "a")
-  |> Es.Iterator.skip ~count:1 |> Es.Iterator.take ~count:2
-  |> Es.Iterator.map ~f:(fun (key, value) -> key ^ "=" ^ Es.Int.to_string value)
-  |> Es.Iterator.to_array |> Js.log
+  [%mel.raw {|{"a": 1, "b": 2, "c": 3, "d": 4}|}] |> Dict.entries
+  |> Array.iterator
+  |> Iterator.filter ~f:(fun (key, _) -> key != "a")
+  |> Iterator.skip ~count:1 |> Iterator.take ~count:2
+  |> Iterator.map ~f:(fun (key, value) -> key ^ "=" ^ Int.to_string value)
+  |> Iterator.to_array |> Js.log
 
 open Browser
 
@@ -116,24 +119,23 @@ let () =
   let root = Document.get_element_by_id "shuko" document |> Option.get in
   Element.append_child ~node:(Element.to_node div) root |> ignore;
   Element.get_client_rects div
-  |> Dom_rect_list.to_iterable |> Iterable.to_array |> Js.log
+  |> Dom_rect_list.to_iterable |> Iterable.to_array |> Console.log
 
 let () =
   let h = Headers.of_array [| ("tfw", "gf") |] in
   h |> Headers.set ~name:"ayy" ~value:"lmao";
   h |> Headers.to_iterable |> Iterable.to_array
-  |> Es.Array.for_each ~f:(fun (k, _v) -> Js.log k);
+  |> Array.for_each ~f:(fun (k, _v) -> Js.log k);
   let r = Request.create "ayy" () in
   let r2 = Request.copy r |> ignore in
   ignore r2;
   let url_search_params = Url_search_params.create () in
   url_search_params |> Url_search_params.set ~value:"lmao" ~name:"ayy";
   url_search_params |> Url_search_params.to_iterable |> Iterable.to_array
-  |> Es.Array.for_each ~f:(fun (k, _v) -> Js.log k);
+  |> Array.for_each ~f:(fun (k, _v) -> Console.log k);
   ()
 
-(* let () =
+let connect () =
   let ws = Web_socket.create "ws://localhost:1234" () in
-  ws
-  |> Web_socket.add_event_listener
-       (`_open (fun _msg -> ws |> Web_socket.send_string "")) *)
+  Web_socket.add_event_listener ws
+    ~f:(`_open (fun _msg -> ws |> Web_socket.send_string ""))
