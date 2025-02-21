@@ -1,6 +1,9 @@
+(** JavaScript [Number]s represented as double-precision 64-bit IEEE 754 floats.
+*)
+
 type t = float
 
-(** {2 Constants} *)
+(** {1 Constants} *)
 
 external epsilon : t = "EPSILON"
 [@@mel.scope "Number"]
@@ -27,7 +30,7 @@ external positive_infinity : t = "POSITIVE_INFINITY"
 [@@mel.scope "Number"]
 (** Special value representing infinity. Returned on overflow. *)
 
-(** {3 Mathematical constants} *)
+(** {2 Mathematical constants} *)
 
 external e : t = "E"
 [@@mel.scope "Math"]
@@ -61,7 +64,7 @@ external sqrt2 : t = "SQRT2"
 [@@mel.scope "Math"]
 (** Square root of 2; approximately 1.414. *)
 
-(** {2 Checks} *)
+(** {1 Checks} *)
 
 external is_finite : t -> bool = "isFinite"
 [@@mel.scope "Number"]
@@ -80,7 +83,7 @@ external is_safe_integer : t -> bool = "isSafeInteger"
 (** Determine whether the passed value is a safe integer (number between
     -(2{^ 53} - 1) and 2{^ 53} - 1). *)
 
-(** {2 Operations} *)
+(** {1 Operations} *)
 
 external ( = ) : t -> t -> bool = "%equal"
 external ( <> ) : t -> t -> bool = "%notequal"
@@ -121,7 +124,7 @@ external random : unit -> t = "random"
 [@@mel.scope "Math"]
 (** Returns a pseudo-random number between 0 and 1. *)
 
-(** {3 Exponential and logarithmic} *)
+(** {2 Exponential and logarithmic} *)
 
 external pow : t -> exponent:t -> t = "pow"
 [@@mel.scope "Math"]
@@ -166,7 +169,7 @@ external log2 : t -> t = "log2"
 [@@mel.scope "Math"]
 (** Returns the base-2 logarithm of the input. *)
 
-(** {3 Trigonometric} *)
+(** {2 Trigonometric} *)
 
 external sin : t -> t = "sin"
 [@@mel.scope "Math"]
@@ -196,7 +199,7 @@ external atan2 : y:t -> x:t -> t = "atan2"
 [@@mel.scope "Math"]
 (** Returns the arctangent of the quotient of its arguments. *)
 
-(** {3 Hyperbolic} *)
+(** {2 Hyperbolic} *)
 
 external sinh : t -> t = "sinh"
 [@@mel.scope "Math"]
@@ -222,7 +225,7 @@ external atanh : t -> t = "atanh"
 [@@mel.scope "Math"]
 (** Returns the hyperbolilc arctangent of the input. *)
 
-(** {2 Parsing and serializing} *)
+(** {1 Parsing and serializing} *)
 
 external unsafe_of_string : string -> t = "parseFloat"
 [@@mel.scope "Number"]
@@ -254,7 +257,7 @@ external to_string : ?radix:int -> (t[@mel.this]) -> string = "toString"
 (** Returns a string representing the specified object in the specified radix
     ("base"). *)
 
-(** {2 Rounding} *)
+(** {1 Rounding} *)
 
 external round : t -> int = "round"
 [@@mel.scope "Math"]

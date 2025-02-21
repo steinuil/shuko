@@ -1,3 +1,5 @@
+(** Functions to encode and decode Universal Resource Identifiers (URIs). *)
+
 external encode : string -> string = "encodeURI"
 (** Encode a URI by replacing each instance of certain characters by one, two,
     three or four escape sequences representing the UTF-8 encoding of the

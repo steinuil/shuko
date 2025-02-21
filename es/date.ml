@@ -1,7 +1,6 @@
-(** JavaScript Date objects represent a single moment in time in a
-    platform-independent format. *)
+(** Platform-independent representation of a single moment in time.
 
-(** Locale-specific functions are intentionally left out; use {!Temporal}
+    Locale-specific functions are intentionally left out; use {!Temporal}
     instead. *)
 
 type t
@@ -15,7 +14,7 @@ external of_unix_timestamp : int -> t = "Date"
 external copy : t -> t = "Date" [@@mel.new]
 (** Copy a Date object. *)
 
-external from_ymd : year:int -> month_index:int -> day:int -> t = "Date"
+external of_ymd : year:int -> month_index:int -> day:int -> t = "Date"
 [@@mel.new]
 (** Create a Date from [year], a 0-based [month_index] and [day]. *)
 
@@ -44,7 +43,7 @@ external current_unix_timestamp : unit -> int = "now"
 (** Return the Unix timestamp in milliseconds corresponding to the current time.
 *)
 
-external utc_from_ymd : year:int -> month_index:int -> day:int -> t = "UTC"
+external utc_of_ymd : year:int -> month_index:int -> day:int -> t = "UTC"
 [@@mel.scope "Date"]
 (** Create a Date with the timezone set to UTC from [year], a 0-based
     [month_index] and [day]. *)

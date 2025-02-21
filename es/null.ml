@@ -1,3 +1,5 @@
+(** The primitive value [null]. *)
+
 type +'a t = 'a Private.null
 
 external null : 'a t = "#null"

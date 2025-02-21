@@ -11,9 +11,9 @@ let split_off ~delimiter str =
       (left, Some right)
 
 let split_off_regex ~delimiter str =
-  let+ res = Regexp.exec ~pattern:delimiter str in
-  let+ match_ = (Regexp.Match_result.matches res).(0) in
-  let i = Regexp.Match_result.index res in
+  let+ res = Reg_exp.exec ~pattern:delimiter str in
+  let+ match_ = (Reg_exp.Match.matches res).(0) in
+  let i = Reg_exp.Match.index res in
   let ri = i + String.length match_ in
   let left = String.slice ~start:0 ~end_:i str in
   let right = String.slice ~start:ri str in

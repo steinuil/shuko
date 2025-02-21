@@ -1,10 +1,12 @@
+(** Arbitrary-precision unsigned integers. *)
+
 type t
 
 external of_int : int -> t = "BigInt"
-(** Converts an int into a Big_int. *)
+(** Creates a BigInt from an int. *)
 
 external of_string : string -> t = "BigInt"
-(** Parses a string into a Big_int. *)
+(** Parses a string into a BigInt. *)
 
 external as_int_n : t -> bits:int -> int = "asIntN"
 [@@mel.scope "BigInt"]
@@ -16,7 +18,7 @@ external as_uint_n : t -> bits:int -> int = "asUintN"
 
 external to_string : ?radix:int -> (t[@mel.this]) -> string = "toString"
 [@@mel.send]
-(** Returns a string representing the BitInt value in the specified radix
+(** Returns a string representing the BigInt value in the specified radix
     ("base"). *)
 
 external to_locale_string :
@@ -25,8 +27,7 @@ external to_locale_string :
   (t[@mel.this]) ->
   string = "toLocaleString"
 [@@mel.send]
-(** Returns a string with a language-sensitive representation of this BigInt
-    value. *)
+(** Returns a string with a language-sensitive representation of the BigInt. *)
 
 external ( = ) : t -> t -> bool = "%equal"
 external ( <> ) : t -> t -> bool = "%notequal"

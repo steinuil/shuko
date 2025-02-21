@@ -1,3 +1,5 @@
+(** The primitive value [undefined]. *)
+
 type +'a t = 'a Private.undefined
 
 external undefined : 'a t = "#undefined"

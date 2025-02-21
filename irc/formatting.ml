@@ -123,10 +123,10 @@ end
 
 let parse_color_format_with re of_string message i =
   let rest = String.slice ~start:i message in
-  match Regexp.exec ~pattern:re rest with
+  match Reg_exp.exec ~pattern:re rest with
   | None -> (Color_command.Reset, i)
   | Some m -> (
-      let captures = Regexp.Match_result.matches m in
+      let captures = Reg_exp.Match.matches m in
       let fg = captures.(1) in
       let bg = captures.(3) in
       match (fg, bg) with

@@ -2,15 +2,14 @@
 
 module Undefined = Undefined
 module Null = Null
-
-(* TODO: Object *)
-(* TODO: Function *)
 module Bool = Bool
-(* TODO: Symbol *)
+module Symbol = Symbol
+(* TODO: Object *)
 
 (** {1 Error objects} *)
 
 exception Error = Caml_js_exceptions.Error
+(** Exception raised from JavaScript, corresponding to the [Error] object. *)
 
 (** {1 Numbers and dates} *)
 
@@ -18,12 +17,13 @@ module Float = Float
 module Int = Int
 module Big_int = Big_int
 module Date = Date
-(* TODO: Temporal *)
+module Temporal = Temporal
 
 (** {1 Text processing} *)
 
 module String = String
-module Regexp = Regexp
+module Reg_exp = Reg_exp
+module Uri = Uri
 
 (** {1 Indexed collections} *)
 
@@ -67,6 +67,7 @@ module Mixins = Mixins
 (* TODO AsyncGeneratorFunction *)
 (* TODO Generator *)
 (* TODO AsyncGenerator *)
+(* TODO Function *)
 (* TODO AsyncFunction *)
 
 (** {1 Reflection} *)

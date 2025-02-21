@@ -42,7 +42,7 @@ let filter ~f iterator =
 
 let take ~count iterator =
   let count = Stdlib.ref count in
-  let rec dispenser =
+  let dispenser =
    fun [@u] () ->
     if !count = 0 then Iterator_result.stop ()
     else (

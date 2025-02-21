@@ -1,11 +1,18 @@
-type t = string
+(** JavaScript UTF-16 strings. *)
 
-external from_char_code : int array -> t = "fromCharCode"
+type t = string
+(** A JavaScript string encoded as a sequence of 16-bit unsigned integer values
+    representing UTF-16 code units. *)
+
+external of_char : char -> t = "%identity"
+(** Casts a char to a string. *)
+
+external of_char_code : int array -> t = "fromCharCode"
 [@@mel.scope "String"] [@@mel.variadic]
 (** Returns a string created by using the specified sequence of Unicode values.
 *)
 
-external from_code_point : int array -> t = "fromCodePoint"
+external of_code_point : int array -> t = "fromCodePoint"
 [@@mel.scope "String"] [@@mel.variadic]
 (** Returns a string created by using the specified sequence of code points. *)
 
@@ -84,7 +91,7 @@ external replace : sub:t -> by:t -> (t[@mel.this]) -> t = "replace"
 [@@mel.send]
 (** Replace the first occurrence of [sub] with [by]. *)
 
-external replace_re : pattern:Regexp.t -> by:t -> (t[@mel.this]) -> t
+external replace_re : pattern:Reg_exp.t -> by:t -> (t[@mel.this]) -> t
   = "replace"
 [@@mel.send]
 (** Replace the first occurrence of [pattern] with [by]. *)
@@ -97,18 +104,17 @@ external replace_all_re : sub:t -> by:t -> (t[@mel.this]) -> t = "replaceAll"
 [@@mel.send]
 (** Replace all occurrences of [pattern] with [by]. *)
 
-external match_ :
-  pattern:Regexp.t -> (t[@mel.this]) -> Regexp.Match_result.t option = "match"
+external match_ : pattern:Reg_exp.t -> (t[@mel.this]) -> Reg_exp.Match.t option
+  = "match"
 [@@mel.send] [@@mel.return null_to_opt]
 (** Match a regular expression against a string. *)
 
 external match_all :
-  pattern:Regexp.t -> (t[@mel.this]) -> Regexp.Match_result.t Iterator.t
-  = "matchAll"
+  pattern:Reg_exp.t -> (t[@mel.this]) -> Reg_exp.Match.t Iterator.t = "matchAll"
 [@@mel.send]
 (** Returns an iterator of all [pattern]'s matches. *)
 
-external search : pattern:Regexp.t -> (t[@mel.this]) -> int = "search"
+external search : pattern:Reg_exp.t -> (t[@mel.this]) -> int = "search"
 [@@mel.send]
 (** Search for a match between a regular expression [pattern] and the calling
     string.
@@ -140,7 +146,7 @@ external split : sep:string -> ?limit:int -> (t[@mel.this]) -> t array = "split"
     occurrences of the substring [sep]. *)
 
 external split_re :
-  pattern:Regexp.t -> ?limit:int -> (t[@mel.this]) -> t option array = "split"
+  pattern:Reg_exp.t -> ?limit:int -> (t[@mel.this]) -> t option array = "split"
 [@@mel.send]
 (** Returns an array of strings populated by splitting the calling string at
     occurrences of the pattern [pattern]. *)
@@ -188,12 +194,13 @@ external trim_start : t -> t = "trimStart"
 [@@mel.send]
 (** Trims whitespace from the end of the string. *)
 
-(** {2 Iterator/array-like impls} *)
+(** {1 Iterators} *)
 
 external as_array_like : t -> t Array_like.t = "%identity"
 (** Cast to {!Array_like.t}. *)
 
-include Mixins.Symbol_iterator (struct
-  type value = t
-  type nonrec t = t
-end)
+external as_iterable : t -> t Iterable.t = "%identity"
+(** Cast to {!Iterable.t}. *)
+
+(** Returns an iterator over the UTF-16 code units of a string. *)
+let iterator : t -> t Iterator.t = Mixins.Unsafe.iterator

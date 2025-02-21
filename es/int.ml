@@ -1,3 +1,5 @@
+(** Safe integer operations for working with JS integer [Number]s. *)
+
 type t = int
 
 external max_safe_integer : t = "MAX_SAFE_INTEGER"
@@ -50,11 +52,6 @@ external clz32 : t -> t = "clz32"
 external abs : t -> t = "abs"
 [@@mel.scope "Math"]
 (** Returns the absolute value of the input. *)
-
-external exp : t -> float = "exp"
-[@@mel.scope "Math"]
-(** Returns e{^ x}, where x is the argument, and e is Euler's number (2.718...,
-    the base of the natural logarithm.) *)
 
 external imul : t -> t = "imul"
 [@@mel.scope "Math"]

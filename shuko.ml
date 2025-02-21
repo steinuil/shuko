@@ -32,7 +32,7 @@ let () =
     ~expected:
       (Message.make
          ~tags:
-           (Es.Dict.of_entries
+           (Es.Dict.of_array
               [|
                 ("aaa", Some "bbb");
                 ("ccc", None);
@@ -97,7 +97,7 @@ let () =
 let _ =
   Es.Promise.make (fun ~resolve ~reject:_ ->
       Browser.Window.set_timeout ~f:(fun () -> (resolve "tfw" [@u])) ~delay:1000)
-  |> Es.Promise.then_ ~f:(fun v -> Js.log v)
+  |> Es.Promise.then_map ~f:(fun v -> Js.log v)
 
 let _ =
   [%mel.raw {|{"a": 1, "b": 2, "c": 3, "d": 4}|}] |> Es.Dict.entries

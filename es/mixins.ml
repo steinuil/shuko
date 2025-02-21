@@ -9,9 +9,9 @@ module Symbol_iterator (T : sig
 end) =
 struct
   (** Returns a new iterator object. *)
-  let iterator : T.t -> T.value Iterator.t = Unsafe.iterator
+  let iterator : T.t -> T.value Private.iterator = Unsafe.iterator
 
-  external as_iterable : T.t -> T.value Iterable.t = "%identity"
+  external as_iterable : T.t -> T.value Private.iterable = "%identity"
 end
 
 module Symbol_async_iterator (T : sig
@@ -29,8 +29,8 @@ module Value_iterable (T : sig
   type value
 end) =
 struct
-  external keys : T.t -> int Iterator.t = "keys" [@@mel.send]
-  external values : T.t -> T.value Iterator.t = "values" [@@mel.send]
+  external keys : T.t -> int Private.iterator = "keys" [@@mel.send]
+  external values : T.t -> T.value Private.iterator = "values" [@@mel.send]
 
   include Symbol_iterator (struct
     type nonrec t = T.t
@@ -44,11 +44,11 @@ module Pair_iterable (T : sig
   type value
 end) =
 struct
-  external entries : T.t -> (T.key * T.value) Iterator.t = "entries"
+  external entries : T.t -> (T.key * T.value) Private.iterator = "entries"
   [@@mel.send]
 
-  external values : T.t -> T.value Iterator.t = "values" [@@mel.send]
-  external keys : T.t -> T.key Iterator.t = "keys" [@@mel.send]
+  external values : T.t -> T.value Private.iterator = "values" [@@mel.send]
+  external keys : T.t -> T.key Private.iterator = "keys" [@@mel.send]
 
   include Symbol_iterator (struct
     type nonrec t = T.t

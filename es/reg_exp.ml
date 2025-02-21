@@ -1,7 +1,11 @@
-type t = Js.re
+(** Regular expressions. *)
 
-module Match_result = struct
+type t = Js.re
+(** A JavaScript [RegExp] object. *)
+
+module Match = struct
   type t
+  (** The result of a regular expression match. *)
 
   external matches : t -> string array = "%identity"
   (** The array containing the matched text as first item, and then one or more
@@ -73,8 +77,7 @@ external unicode_sets : t -> bool = "unicodeSets"
 [@@mel.get]
 (** Whether or not the v flag, an upgrade to the u mode, is enabled. *)
 
-external exec : string -> pattern:(t[@mel.this]) -> Match_result.t option
-  = "exec"
+external exec : string -> pattern:(t[@mel.this]) -> Match.t option = "exec"
 [@@mel.send] [@@mel.return null_to_opt]
 (** Executes a search for a match in its string parameter. *)
 

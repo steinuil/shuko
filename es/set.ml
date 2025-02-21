@@ -1,8 +1,13 @@
+(** Mutable JavaScript sets. *)
+
 type 'a t = 'a Private.set
+(** A JavaScript [Set] object, representing a collection of values that may only
+    appear once within the collection. The values of a set are compared using
+    referential equality. *)
 
 external empty : unit -> 'a t = "Set"
 [@@mel.new]
-(** Creates a new [Set] object. *)
+(** Creates an empty [Set] object. *)
 
 external of_iterable : 'a Iterable.t -> 'a t = "Set"
 [@@mel.new]
@@ -74,7 +79,7 @@ external is_superset_of : other:'a t -> ('a t[@mel.this]) -> bool
 (** Takes a set and returns a boolean indicating if all elements of the given
     set are in this set. *)
 
-(** {2 Iterator impls} *)
+(** {2 Iterators} *)
 
 external as_iterable : 'a t -> 'a Iterable.t = "%identity"
 (** Cast to {!Iterable.t}. *)

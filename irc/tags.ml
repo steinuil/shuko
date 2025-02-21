@@ -11,4 +11,4 @@ let to_string tags =
 let of_string str =
   str |> String.split ~sep:";"
   |> Array.map ~f:(Utils.split_off ~delimiter:"=")
-  |> Dict.of_entries
+  |> Dict.of_array
