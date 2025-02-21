@@ -100,9 +100,11 @@ let _ =
   |> Es.Promise.then_ ~f:(fun v -> Js.log v)
 
 let _ =
-  [%mel.raw {|{"a": 1, "b": 2}|}] |> Es.Dict.entries |> Es.Array.iterator
+  [%mel.raw {|{"a": 1, "b": 2, "c": 3, "d": 4}|}] |> Es.Dict.entries
+  |> Es.Array.iterator
   |> Es.Iterator.filter ~f:(fun (key, _) -> key != "a")
-  |> Es.Iterator.map ~f:(fun (key, value) -> key ^ Es.Int.to_string value)
+  |> Es.Iterator.skip ~count:1 |> Es.Iterator.take ~count:2
+  |> Es.Iterator.map ~f:(fun (key, value) -> key ^ "=" ^ Es.Int.to_string value)
   |> Es.Iterator.to_array |> Js.log
 
 open Browser

@@ -18,6 +18,8 @@ let of_dispenser : ((unit -> 'a Iterator_result.t)[@u]) -> 'a t =
     };
   }|}]
 
+open Stdlib
+
 let map ~f iterator =
   of_dispenser (fun [@u] () ->
       let result = next iterator in
@@ -25,16 +27,38 @@ let map ~f iterator =
       | (Some false | None), Some value ->
           Iterator_result.continue ~value:(f value)
       | Some true, _ -> Iterator_result.stop ()
-      | _ -> Stdlib.invalid_arg "")
+      | _ -> invalid_arg "")
 
 let filter ~f iterator =
   let rec dispenser =
    fun [@u] () ->
     let result = next iterator in
     match (Iterator_result.done_ result, Iterator_result.value result) with
-    | (Some false | None), Some value when f value ->
-        Iterator_result.continue ~value
+    | (Some false | None), Some value when f value -> result
+    | Some true, _ -> result
     | (Some false | None), _ -> dispenser () [@u]
-    | Some true, _ -> Iterator_result.stop ()
+  in
+  of_dispenser dispenser
+
+let take ~count iterator =
+  let count = Stdlib.ref count in
+  let rec dispenser =
+   fun [@u] () ->
+    if !count = 0 then Iterator_result.stop ()
+    else (
+      decr count;
+      next iterator)
+  in
+  of_dispenser dispenser
+
+let skip ~count iterator =
+  let count = ref count in
+  let rec dispenser =
+   fun [@u] () ->
+    let result = next iterator in
+    if !count = 0 then result
+    else (
+      decr count;
+      dispenser () [@u])
   in
   of_dispenser dispenser
