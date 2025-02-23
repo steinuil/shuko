@@ -4,7 +4,7 @@ module Undefined = Undefined
 module Null = Null
 module Bool = Bool
 module Symbol = Symbol
-(* TODO: Object *)
+module Object = Object
 
 (** {1 Error objects} *)
 

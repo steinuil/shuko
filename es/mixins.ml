@@ -3,55 +3,55 @@ module Unsafe = struct
     [%mel.raw {js|function(t) { return t[Symbol.iterator](); }|js}]
 end
 
-module Symbol_iterator (T : sig
-  type t
-  type value
-end) =
-struct
-  (** Returns a new iterator object. *)
-  let iterator : T.t -> T.value Private.iterator = Unsafe.iterator
+(* module Symbol_iterator (T : sig *)
+(* type t *)
+(* type value *)
+(* end) = *)
+(* struct *)
+(** Returns a new iterator object. *)
+(* let iterator : T.t -> T.value Private.iterator = Unsafe.iterator *)
 
-  external as_iterable : T.t -> T.value Private.iterable = "%identity"
-end
+(* external as_iterable : T.t -> T.value Private.iterable = "%identity" *)
+(* end *)
 
-module Symbol_async_iterator (T : sig
-  type t
-  type value
-end) =
-struct
-  let async_iterator : T.t -> T.value Async_iterator.t = Unsafe.iterator
+(* module Symbol_async_iterator (T : sig *)
+(* type t *)
+(* type value *)
+(* end) = *)
+(* struct *)
+(* let async_iterator : T.t -> T.value Async_iterator.t = Unsafe.iterator *)
 
-  external as_async_iterable : T.t -> T.value Async_iterable.t = "%identity"
-end
+(* external as_async_iterable : T.t -> T.value Async_iterable.t = "%identity" *)
+(* end *)
 
-module Value_iterable (T : sig
-  type t
-  type value
-end) =
-struct
-  external keys : T.t -> int Private.iterator = "keys" [@@mel.send]
-  external values : T.t -> T.value Private.iterator = "values" [@@mel.send]
+(* module Value_iterable (T : sig *)
+(* type t *)
+(* type value *)
+(* end) = *)
+(* struct *)
+(* external keys : T.t -> int Private.iterator = "keys" [@@mel.send] *)
+(* external values : T.t -> T.value Private.iterator = "values" [@@mel.send] *)
 
-  include Symbol_iterator (struct
-    type nonrec t = T.t
-    type nonrec value = T.value
-  end)
-end
+(* include Symbol_iterator (struct *)
+(* type nonrec t = T.t *)
+(* type nonrec value = T.value *)
+(* end) *)
+(* end *)
 
-module Pair_iterable (T : sig
-  type t
-  type key
-  type value
-end) =
-struct
-  external entries : T.t -> (T.key * T.value) Private.iterator = "entries"
-  [@@mel.send]
+(* module Pair_iterable (T : sig *)
+(* type t *)
+(* type key *)
+(* type value *)
+(* end) = *)
+(* struct *)
+(* external entries : T.t -> (T.key * T.value) Private.iterator = "entries" *)
+(* [@@mel.send] *)
 
-  external values : T.t -> T.value Private.iterator = "values" [@@mel.send]
-  external keys : T.t -> T.key Private.iterator = "keys" [@@mel.send]
+(* external values : T.t -> T.value Private.iterator = "values" [@@mel.send] *)
+(* external keys : T.t -> T.key Private.iterator = "keys" [@@mel.send] *)
 
-  include Symbol_iterator (struct
-    type nonrec t = T.t
-    type nonrec value = T.key * T.value
-  end)
-end
+(* include Symbol_iterator (struct *)
+(* type nonrec t = T.t *)
+(* type nonrec value = T.key * T.value *)
+(* end) *)
+(* end *)
